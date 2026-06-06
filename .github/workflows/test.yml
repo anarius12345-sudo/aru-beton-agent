@@ -18,9 +18,13 @@ jobs:
       - name: Установить библиотеки
         run: pip install requests
 
-      - name: Запустить тест Wialon
+      - name: Выгрузить отчёт Wialon
         env:
           WIALON_TOKEN: ${{ secrets.WIALON_TOKEN }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python test_wialon_rows2.py
+        run: python dump_report.py
+
+      - name: Сохранить дамп
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-dump
+          path: report_dump.json
