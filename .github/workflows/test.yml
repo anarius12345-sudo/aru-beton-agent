@@ -1,4 +1,24 @@
-- name: Запустить тест Wialon
+name: Тест агента ARU Beton
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-agent:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Скачать код
+        uses: actions/checkout@v4
+
+      - name: Установить Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Установить библиотеки
+        run: pip install requests
+
+      - name: Запустить тест Wialon
         env:
           WIALON_TOKEN: ${{ secrets.WIALON_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
