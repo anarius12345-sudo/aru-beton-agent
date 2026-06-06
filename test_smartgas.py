@@ -18,5 +18,23 @@ def send_telegram(text):
     requests.post(url, data={"chat_id": CHAT_ID, "text": text[:4000]})
 
 resp = requests.get(f"{BASE_URL}/transactions", headers=headers, params=params, timeout=60)
-send_telegram(f"СТАТУС: {resp.status_code}\nПЕРИОД: {date_from}—{date_to}\nОТВЕТ (сырой):\n{resp.text[:1500]}")
-print(resp.status_code, resp.text[:1500])
+data = resp.json()
+
+# Заправки лежат в transactions.data
+block = data.get("transactions", {})
+txns = block.get("data", []) if isinstance(block, dict) else []
+
+liters = sum(float(t.get("deliver_quantity", 0)) for t in txns)
+order_sum = sum(float(t.get("total_order_amt", 0)) for t in txns)
+accept_sum = sum(float(t.get("accept_amt", 0)) for t in txns)
+
+msg = (
+    f"✅ Smartgas API — данные получены\n"
+    f"Период: {date_from} — {date_to}\n"
+    f"Заправок: {len(txns)}\n"
+    f"Объём: {liters:.0f} л\n"
+    f"Сумма заказа: {order_sum:,.0f} ₸\n"
+    f"Принято к оплате: {accept_sum:,.0f} ₸"
+).replace(",", " ")
+send_telegram(msg)
+print(msg)
