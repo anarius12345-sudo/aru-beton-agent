@@ -15,8 +15,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Установить шрифты (кириллица для PDF)
+        run: sudo apt-get update && sudo apt-get install -y fonts-dejavu-core
+
       - name: Установить библиотеки
-        run: pip install requests
+        run: pip install requests openpyxl reportlab
 
       - name: Запустить агента
         env:
@@ -24,4 +27,4 @@ jobs:
           SMARTGAS_API_KEY: ${{ secrets.SMARTGAS_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python test_fuel_cols.py
+        run: python agent.py
