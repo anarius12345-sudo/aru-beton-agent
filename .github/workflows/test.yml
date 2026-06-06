@@ -23,4 +23,4 @@ jobs:
           WIALON_TOKEN: ${{ secrets.WIALON_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python test_wialon.py
+        run: python test_wialon_reports.py
