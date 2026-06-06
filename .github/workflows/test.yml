@@ -18,9 +18,10 @@ jobs:
       - name: Установить библиотеки
         run: pip install requests
 
-      - name: Выгрузить отчёт Wialon
+      - name: Запустить агента
         env:
           WIALON_TOKEN: ${{ secrets.WIALON_TOKEN }}
+          SMARTGAS_API_KEY: ${{ secrets.SMARTGAS_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python dump_report.py
+        run: python agent.py
