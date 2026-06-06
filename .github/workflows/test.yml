@@ -1,26 +1,6 @@
-name: Тест агента ARU Beton
-
-on:
-  workflow_dispatch:
-
-jobs:
-  run-agent:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Скачать код
-        uses: actions/checkout@v4
-
-      - name: Установить Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Установить библиотеки
-        run: pip install requests
-
-      - name: Запустить тест Smartgas
+- name: Запустить тест Wialon
         env:
-          SMARTGAS_API_KEY: ${{ secrets.SMARTGAS_API_KEY }}
+          WIALON_TOKEN: ${{ secrets.WIALON_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python test_smartgas.py
+        run: python test_wialon.py
