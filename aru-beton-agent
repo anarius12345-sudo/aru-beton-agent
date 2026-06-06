@@ -1,0 +1,42 @@
+import os
+import requests
+
+WIALON_TOKEN = os.environ.get("WIALON_TOKEN")
+BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+
+BASE = "https://hst-api.wialon.com/wialon/ajax.html"
+
+def send_telegram(text):
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    requests.post(url, data={"chat_id": CHAT_ID, "text": text[:4000]})
+
+login = requests.get(BASE, params={
+    "svc": "token/login",
+    "params": '{"token":"%s"}' % WIALON_TOKEN
+}, timeout=60).json()
+sid = login["eid"]
+
+# Ресурсы с шаблонами отчётов (flags 8193 = базовое + отчёты)
+res = requests.get(BASE, params={
+    "svc": "core/search_items",
+    "params": '{"spec":{"itemsType":"avl_resource","propName":"sys_name","propValueMask":"*","sortType":"sys_name"},"force":1,"flags":8193,"from":0,"to":0}',
+    "sid": sid
+}, timeout=60).json()
+
+lines = []
+for r in res.get("items", []):
+    rid = r.get("id")
+    for tid, t in (r.get("rep", {}) or {}).items():
+        lines.append(f"resId={rid} | tid={tid} | {t.get('n','?')}")
+
+send_telegram("📋 Шаблоны отчётов Wialon:\n" + ("\n".join(lines[:40]) if lines else "не найдено"))
+
+# Группы машин
+grp = requests.get(BASE, params={
+    "svc": "core/search_items",
+    "params": '{"spec":{"itemsType":"avl_unit_group","propName":"sys_name","propValueMask":"*","sortType":"sys_name"},"force":1,"flags":1,"from":0,"to":0}',
+    "sid": sid
+}, timeout=60).json()
+glines = [f"groupId={g.get('id')} | {g.get('nm')}" for g in grp.get("items", [])]
+send_telegram("👥 Группы машин:\n" + ("\n".join(glines[:20]) if glines else "не найдено"))
