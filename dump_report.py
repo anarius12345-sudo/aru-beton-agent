@@ -23,6 +23,8 @@ for idx, t in enumerate(rep.get("reportResult",{}).get("tables",[])):
         "config":{"type":"range","data":{"from":0,"to":2000,"level":2,"unitInfo":1}}}, sid)
     dump["data"][f"{idx}_{t.get('label')}"] = rows
 
-with open("report_dump.json", "w", encoding="utf-8") as f:
-    json.dump(dump, f, ensure_ascii=False, indent=1)
-print("saved")
+s = json.dumps(dump, ensure_ascii=False)
+print("=====DUMP START=====")
+for i in range(0, len(s), 4000):
+    print(s[i:i+4000])
+print("=====DUMP END=====")
