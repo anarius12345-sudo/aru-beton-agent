@@ -18,8 +18,9 @@ jobs:
       - name: Установить библиотеки
         run: pip install requests
 
-      - name: Запустить тест Телеграма
+      - name: Запустить тест Smartgas
         env:
+          SMARTGAS_API_KEY: ${{ secrets.SMARTGAS_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python test_telegram.py
+        run: python test_smartgas.py
