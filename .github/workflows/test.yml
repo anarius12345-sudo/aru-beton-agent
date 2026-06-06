@@ -22,9 +22,3 @@ jobs:
         env:
           WIALON_TOKEN: ${{ secrets.WIALON_TOKEN }}
         run: python dump_report.py
-
-      - name: Сохранить дамп
-        uses: actions/upload-artifact@v4
-        with:
-          name: report-dump
-          path: report_dump.json
