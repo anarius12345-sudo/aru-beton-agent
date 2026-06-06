@@ -2,6 +2,8 @@ name: Тест агента ARU Beton
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *'        # 03:00 UTC = 08:00 Алматы (час по UTC = местный − 5)
 
 jobs:
   run-agent:
