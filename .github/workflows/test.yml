@@ -1,28 +1,28 @@
 name: Тест агента ARU Beton
-
+ 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 3 * * *'        # 03:00 UTC = 08:00 Алматы (час по UTC = местный − 5)
-
+    - cron: '0 2 * * *'        # 02:00 UTC = 07:00 Алматы (час по UTC = местный − 5)
+ 
 jobs:
   run-agent:
     runs-on: ubuntu-latest
     steps:
       - name: Скачать код
         uses: actions/checkout@v4
-
+ 
       - name: Установить Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
+ 
       - name: Установить шрифты (кириллица для PDF)
         run: sudo apt-get update && sudo apt-get install -y fonts-dejavu-core
-
+ 
       - name: Установить библиотеки
         run: pip install requests openpyxl reportlab
-
+ 
       - name: Запустить агента
         env:
           WIALON_TOKEN: ${{ secrets.WIALON_TOKEN }}
