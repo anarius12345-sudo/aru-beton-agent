@@ -11,14 +11,17 @@ st=int((now-timedelta(days=5)).replace(hour=0,minute=0,second=0).timestamp());en
 call("report/cleanup_result",{},sid)
 call("report/exec_report",{"reportResourceId":RES,"reportTemplateId":13,"reportObjectId":GRP,"reportObjectSecId":0,"interval":{"from":st,"to":en,"flags":0}},sid)
 
-# СПОСОБ A: range level 2
-a=call("report/select_result_rows",{"tableIndex":0,"config":{"type":"range","data":{"from":0,"to":40,"level":2,"unitInfo":1}}},sid)
-out=["СПОСОБ range/level2:"]
-if isinstance(a,list):
-    out.append(f"строк: {len(a)}")
-    for r in a[:12]:
-        c=[cl(x) for x in r.get("c",[])]
-        out.append(("["+str(r.get('level','?'))+"] "+" | ".join(c))[:200])
-else:
-    out.append("не список: "+str(a)[:200])
+top=call("report/get_result_rows",{"tableIndex":0,"indexFrom":0,"indexTo":50},sid)
+out=[f"дат верхнего уровня: {len(top) if isinstance(top,list) else '?'}"]
+# берём первую дату с детьми и пробуем get_result_subrows
+for di,r in enumerate(top if isinstance(top,list) else []):
+    if r.get("rows",0)>0:
+        out.append(f"строка {di}: детей={r.get('rows')}")
+        sub=call("report/get_result_subrows",{"tableIndex":0,"rowIndex":di,"indexFrom":0,"indexTo":30},sid)
+        out.append("get_result_subrows -> "+("список "+str(len(sub)) if isinstance(sub,list) else str(sub)[:150]))
+        if isinstance(sub,list):
+            for s in sub[:6]:
+                c=[cl(x) for x in s.get("c",[])]
+                out.append("  "+" | ".join(c)[:180])
+        break
 tg("\n".join(out)[:4000])
