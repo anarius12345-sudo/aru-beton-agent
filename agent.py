@@ -183,7 +183,8 @@ def get_wialon_fuel(sid, ts_from, ts_to):
     for kk in res:
         seen=set(); uniq=[]
         for x in res[kk]:
-            key=(x["code"],str(x["dt"]),round(x["liters"],1))
+            tkey = x["dt"].strftime("%Y-%m-%d %H:%M") if x["dt"] else "?"
+            key=(x["code"],tkey,round(x["liters"]/0.5)*0.5)
             if key in seen: continue
             seen.add(key); uniq.append(x)
         res[kk]=uniq
@@ -218,6 +219,15 @@ def match_abc(sg, wl_fuel):
         pairs.append({"code":cards[i]["code"],"mp":cards[i]["liters"],"dut":baks[j]["liters"],
                       "delta":cards[i]["liters"]-baks[j]["liters"],"gap":gap,
                       "azs":cards[i]["azs"],"dt":cards[i]["dt"],"fuel":cards[i]["fuel"]})
+    # диагностика матчинга
+    try:
+        cset=sorted(set(c["code"] for c in cards)); bset=sorted(set(b["code"] for b in baks))
+        common=sorted(set(cset)&set(bset))
+        only_card=sorted(set(cset)-set(bset)); only_bak=sorted(set(bset)-set(cset))
+        tg(f"[diag match] карт-кодов:{len(cset)} бак-кодов:{len(bset)} общих:{len(common)} пар:{len(pairs)}\n"
+           f"только карта: {','.join(only_card[:10])}\n"
+           f"только бак: {','.join(only_bak[:10])}")
+    except: pass
     B = [c for c in cards if not c["used"]]   # карта без ДУТ
     C = [b for b in baks if not b["used"]]    # ДУТ без карты
     return pairs, B, C
