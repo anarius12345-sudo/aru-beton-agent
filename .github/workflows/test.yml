@@ -2,8 +2,10 @@ name: Тест агента ARU Beton
  
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [run-agent]
   schedule:
-  - cron: '25 10 * * *'
+    - cron: '0 2 * * *'
  
 jobs:
   run-agent:
