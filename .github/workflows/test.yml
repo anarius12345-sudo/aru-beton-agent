@@ -3,7 +3,7 @@ name: Тест агента ARU Beton
 on:
   workflow_dispatch:
   schedule:
-  - cron: '50 9 * * *' 
+    - cron: '15 10 * * *'
  
 jobs:
   run-agent:
